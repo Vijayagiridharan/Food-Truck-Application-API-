@@ -18,8 +18,8 @@ def create_app():
     with app.app_context():
         db.create_all()
 
-    from app.module_one import bp as module_one_bp
-    app.register_blueprint(module_one_bp)
+    from app.login import bp as login_bp
+    app.register_blueprint(login_bp)
     # Register Blueprints
     
     return app
