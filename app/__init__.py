@@ -12,11 +12,8 @@ def create_app():
     db.init_app(app)
 
     # Register Blueprints
-    from .module_one import bp as module_one_bp
+    from .signup import bp as module_one_bp
     app.register_blueprint(module_one_bp)
 
-    # Ensure all database models are created
-    with app.app_context():
-        db.create_all()
-
     return app
+
