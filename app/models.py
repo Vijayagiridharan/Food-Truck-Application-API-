@@ -11,3 +11,4 @@ class UserDetail(db.Model):
     mobileno = db.Column(db.String(45), nullable=False)
     emailid = db.Column(db.String(45), unique=True, nullable=False)
     password = db.Column(db.String(45), nullable=False)
+

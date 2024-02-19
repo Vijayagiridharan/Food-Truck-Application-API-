@@ -1,5 +1,6 @@
 from flask import Flask
 from dotenv import load_dotenv
+
 from models import db
 
 load_dotenv()
@@ -8,6 +9,15 @@ load_dotenv()
 def create_app():
     app = Flask(__name__)
     app.config.from_object('config.Config')
+
+
+  
+
+    # Register Blueprints
+    from .signup import bp as signup_bp
+    app.register_blueprint(signup_bp)
+
+
     
     # Configure the database URI
     app.config['SQLALCHEMY_DATABASE_URI'] = 'your-database-uri'
@@ -22,4 +32,6 @@ def create_app():
     app.register_blueprint(login_bp)
     # Register Blueprints
     
+
     return app
+
