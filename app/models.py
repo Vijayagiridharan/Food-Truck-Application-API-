@@ -24,11 +24,11 @@ class UserDetail:
             return cursor.fetchone()
 
     @staticmethod
-    def insert_user(name, mobileno, emailid, password):
+    def insert_user(name, mobileno, emailid, password,isAdmin):
         db = get_db()
         with db.cursor() as cursor:
             cursor.execute("""
-                INSERT INTO userdetail (name, mobileno, emailid, passsword)
-                VALUES (%s, %s, %s, %s)
-            """, (name, mobileno, emailid, password))
+                INSERT INTO userdetail (name, mobileno, emailid, passsword,isAdmin)
+                VALUES (%s, %s, %s, %s, %s)
+            """, (name, mobileno, emailid, password, isAdmin))
             db.commit()

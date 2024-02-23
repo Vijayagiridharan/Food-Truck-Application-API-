@@ -1,6 +1,6 @@
 import sys
 from flask import request, jsonify
-from werkzeug.security import check_password_hash,generate_password_hash
+#from werkzeug.security import check_password_hash,generate_password_hash
 from ..models import  UserDetail
 import jwt
 import datetime
@@ -29,13 +29,15 @@ def login():
     if not user:
         # If the user does not exist, return an error message
         return jsonify({"error": "Invalid email id"}), 401
-    hashed_password = user['passsword']
-    # Check if the provided password matches the stored hashed password
-    string_password = hashed_password.decode('utf8')
-    # print(user['passsword'], generate_password_hash(data['password']))
-    if not check_password_hash(user['passsword'], data['password']): 
+
+    if (data['password']==user['passsword']): 
+        if(data['isAdmin']==user['isAdmin']):
+            return jsonify({"success": "Login successful"}),201
+        else:
+            return jsonify({"error": "User doesnt have admin credentials and cant enter admin module"}),201    
+    else:
         # If the password does not match, return an error message
-        return jsonify({"error": "Please enter correct email id/password combination"},user['passsword'],check_password_hash(user['passsword'], data['password']) ), 401
+        return jsonify({"error": "Please enter correct email id/password combination"}), 401
 
     # Generate a JWT token for the authenticated user
     token = generate_jwt_token(user.userid)
@@ -52,9 +54,9 @@ def signup():
     if existing_user:
         return jsonify({"error": "Email already exists"}), 409
     
-    password = data['password']
+    
     # Create a new user
-    UserDetail.insert_user(data['name'],data['mobileno'],data['emailid'],bcrypt.hashpw(password.encode('utf8'), bcrypt.gensalt()))
+    UserDetail.insert_user(data['name'],data['mobileno'],data['emailid'],data['password'],data['isAdmin'])
 
     return jsonify({"message": "User created successfully"}), 201
 
