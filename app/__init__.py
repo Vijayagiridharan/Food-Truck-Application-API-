@@ -33,6 +33,8 @@ def create_app():
     # Register Blueprints
     from .routes.routes import login_bp as login_bp
     app.register_blueprint(login_bp)
+    from .routes.routes import item_bp as item_bp
+    app.register_blueprint(item_bp)
 
 
 

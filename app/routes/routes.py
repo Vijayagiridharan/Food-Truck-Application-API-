@@ -1,12 +1,11 @@
 import sys
-from flask import request, jsonify
+from flask import jsonify, Blueprint, request
 #from werkzeug.security import check_password_hash,generate_password_hash
-from ..models import  UserDetail
+from ..models import  UserDetail, Item
 import jwt
 import datetime
 from flask import Blueprint
 from .. import get_db
-from ..models import UserDetail
 import bcrypt
 
 login_bp = Blueprint('login', __name__, url_prefix='/auth')
@@ -84,3 +83,71 @@ def test_db():
     cursor.execute('SELECT VERSION();')
     version = cursor.fetchone()
     return {'db_version': version}
+
+
+
+
+item_bp = Blueprint('item', __name__, url_prefix='/item')
+
+@item_bp.route('/create', methods=['POST'])
+def create_item():
+    """
+    API endpoint to create a new item.
+    Expects a JSON payload with name, pictureUrl, price, and description.
+
+    Returns:
+        A JSON response with a success message and a 201 HTTP status code if the item is created successfully.
+    """
+    data = request.json
+    Item.insert_item(data['name'], data['pictureUrl'], data['price'], data['description'])
+    return jsonify({"message": "Item created successfully"}), 201
+
+@item_bp.route('/<int:item_id>', methods=['GET'])
+def read_item(item_id):
+    """
+    API endpoint to retrieve an item by its ID.
+
+    Args:
+        item_id (int): Unique identifier of the item.
+
+    Returns:
+        A JSON response with the item data and a 200 HTTP status code if the item is found.
+        If the item is not found, returns a JSON error message with a 404 HTTP status code.
+    """
+    item = Item.get_item(item_id)
+    if item:
+        return jsonify(item), 200
+    else:
+        return jsonify({"error": "Item not found"}), 404
+
+@item_bp.route('/update/<int:item_id>', methods=['PUT'])
+def update_item(item_id):
+    """
+    API endpoint to update an existing item.
+
+    Args:
+        item_id (int): Unique identifier of the item to update.
+    
+    Expects a JSON payload with updated name, pictureUrl, price, and description.
+
+    Returns:
+        A JSON response with a success message and a 200 HTTP status code if the update is successful.
+    """
+    data = request.json
+    Item.update_item(item_id, data['name'], data['pictureUrl'], data['price'], data['description'])
+    return jsonify({"message": "Item updated successfully"}), 200
+
+@item_bp.route('/delete/<int:item_id>', methods=['DELETE'])
+def delete_item(item_id):
+    """
+    API endpoint to delete an item by its ID.
+
+    Args:
+        item_id (int): Unique identifier of the item to delete.
+
+    Returns:
+        A JSON response with a success message and a 200 HTTP status code if the deletion is successful.
+    """
+    Item.delete_item(item_id)
+    return jsonify({"message": "Item deleted successfully"}), 200
+
