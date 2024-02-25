@@ -1,16 +1,3 @@
-# from flask_sqlalchemy import SQLAlchemy
-
-# db = SQLAlchemy()
-
-# # Creating table: userdetails that will store information about user
-# class UserDetail(db.Model):
-#     __tablename__ = 'userdetail'
-
-#     userid = db.Column(db.Integer, primary_key=True)
-#     name = db.Column(db.String(45), nullable=False)
-#     mobileno = db.Column(db.String(45), nullable=False)
-#     emailid = db.Column(db.String(45), unique=True, nullable=False)
-#     password = db.Column(db.String(45), nullable=False)
 from . import get_db
 
 class UserDetail:
@@ -33,45 +20,6 @@ class UserDetail:
             """, (name, mobileno, emailid, password, isAdmin))
             db.commit()
 
-
-
-# class Item:
-#     @staticmethod
-#     def insert_item(name, pictureUrl, price, description):
-#         db = get_db()
-#         with db.cursor() as cursor:
-#             cursor.execute("""
-#                 INSERT INTO item (name, pictureUrl, price, description)
-#                 VALUES (%s, %s, %s, %s)
-#             """, (name, pictureUrl, price, description))
-#             db.commit()
-
-#     @staticmethod
-#     def get_item(itemId):
-#         db = get_db()
-#         with db.cursor() as cursor:
-#             cursor.execute("""
-#                 SELECT * FROM item WHERE itemId = %s
-#             """, (itemId,))
-#             return cursor.fetchone()
-
-#     @staticmethod
-#     def update_item(itemId, name, pictureUrl, price, description):
-#         db = get_db()
-#         with db.cursor() as cursor:
-#             cursor.execute("""
-#                 UPDATE item SET name = %s, pictureUrl = %s, price = %s, description = %s WHERE itemId = %s
-#             """, (name, pictureUrl, price, description, itemId))
-#             db.commit()
-
-#     @staticmethod
-#     def delete_item(itemId):
-#         db = get_db()
-#         with db.cursor() as cursor:
-#             cursor.execute("""
-#                 DELETE FROM item WHERE itemId = %s
-#             """, (itemId,))
-#             db.commit()
 
 
 
@@ -102,6 +50,8 @@ class Item:
             """, (name, pictureUrl, price, description))
             db.commit()
 
+
+
     @staticmethod
     def get_item(itemId):
         """
@@ -119,6 +69,8 @@ class Item:
                 SELECT * FROM item WHERE itemId = %s
             """, (itemId,))
             return cursor.fetchone()
+
+
 
     @staticmethod
     def update_item(itemId, name, pictureUrl, price, description):
@@ -141,6 +93,9 @@ class Item:
             """, (name, pictureUrl, price, description, itemId))
             db.commit()
 
+
+
+
     @staticmethod
     def delete_item(itemId):
         """
@@ -157,3 +112,15 @@ class Item:
                 DELETE FROM item WHERE itemId = %s
             """, (itemId,))
             db.commit()
+
+
+
+
+    @staticmethod
+    def get_all_items():
+        db = get_db()
+        with db.cursor() as cursor:
+            cursor.execute("""
+                SELECT * FROM item
+            """)
+            return cursor.fetchall()

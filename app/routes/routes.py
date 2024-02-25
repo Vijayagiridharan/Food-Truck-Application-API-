@@ -44,6 +44,9 @@ def login():
     # Return the generated token in the response
     return jsonify({"token": token}), 200
 
+
+
+
 @login_bp.route('/signup', methods=['POST'])
 def signup():
     data = request.json
@@ -58,6 +61,7 @@ def signup():
     UserDetail.insert_user(data['name'],data['mobileno'],data['emailid'],data['password'],data['isAdmin'])
 
     return jsonify({"message": "User created successfully"}), 201
+
 
 
 
@@ -76,6 +80,9 @@ def generate_jwt_token(user_id, secret_key='your-secret-key', expires_in=3600):
     }
     return jwt.encode(payload, secret_key, algorithm='HS256')
 
+
+
+
 @login_bp.route('/test_db', methods=['GET'])
 def test_db():
     db = get_db()
@@ -83,6 +90,7 @@ def test_db():
     cursor.execute('SELECT VERSION();')
     version = cursor.fetchone()
     return {'db_version': version}
+
 
 
 
@@ -102,6 +110,9 @@ def create_item():
     Item.insert_item(data['name'], data['pictureUrl'], data['price'], data['description'])
     return jsonify({"message": "Item created successfully"}), 201
 
+
+
+
 @item_bp.route('/<int:item_id>', methods=['GET'])
 def read_item(item_id):
     """
@@ -120,6 +131,9 @@ def read_item(item_id):
     else:
         return jsonify({"error": "Item not found"}), 404
 
+
+
+
 @item_bp.route('/update/<int:item_id>', methods=['PUT'])
 def update_item(item_id):
     """
@@ -137,6 +151,9 @@ def update_item(item_id):
     Item.update_item(item_id, data['name'], data['pictureUrl'], data['price'], data['description'])
     return jsonify({"message": "Item updated successfully"}), 200
 
+
+
+
 @item_bp.route('/delete/<int:item_id>', methods=['DELETE'])
 def delete_item(item_id):
     """
@@ -150,4 +167,16 @@ def delete_item(item_id):
     """
     Item.delete_item(item_id)
     return jsonify({"message": "Item deleted successfully"}), 200
+
+
+
+@item_bp.route('/all', methods=['GET'])
+def get_all_items():
+    """API endpoint to get all items.
+
+    Returns:
+        A JSON response with a list of all items and a 200 HTTP status code.
+    """
+    items = Item.get_all_items()  # Assuming get_all_items is the method to fetch all items
+    return jsonify(items), 200
 
