@@ -1,0 +1,13 @@
+{
+  "type": "service_account",
+  "project_id": "aerial-antonym-413017",
+  "private_key_id": "324e3b83c7c83b360627b07c4e4cbfc2a409cf89",
+  "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvgIBADANBgkqhkiG9w0BAQEFAASCBKgwggSkAgEAAoIBAQDtQJAfwAxf8jco\ngkOMAZddBqx7Xl6poKHvO+jIenWUz99JuorY0/d58CfH+5EvzAoluz1lK6dFA3TI\nZZFd9jabJpN2sUQN0P17qUjQPRtEz1Msp+awJAtsbNx7UHjK/OXJTinL8hPpT629\nDFrQ0WzzLBAe+W+Irs/Jm50QF8TurF/FkT1In3naa3QXITKoR6re9j2FELfyVAnk\nJpgZm1bZ8pP3jaWR5yrqCsgxRwGf6PU0e57a1mUBa0baZ7cue57okmofE+msKlA5\nFTn3SGyfyFzvNmV4vaCzDfJnfsnbYAWcOLW9zXivcIWWDas1xOTXaZceIThr4+pR\nm0dhrdkZAgMBAAECggEAC5+lpVXoj/d9z1IZKBit3JoRROwPMY/+pF9oMhDvMM7B\nuaArjEr6QshK0qfsaY3oE11/OQqF+UIdlxyEHjk2sgGWU52EtYk/L1n7CMTC+2s4\nP9BWuNt95HPYQNcPoUukSxQKxS9Y3WM7d68ixedKHLHUdQgIeFxZhB7yd3w1TZzJ\nMirJ/dfptyqrpmb3iBQFFVgl5YxNjoX+q8NgS33QiCCzsA1dIjIKIh58CEahTAIP\n6oTXYi6wbmcFhC5/pEt9QEXA+514DYXsfUnI8J2qFEbG5Mh689szmtr/4us8jD1O\nuxbrJchrU29vGDub7Q8teO4UPZBVRsHCLn5wwiq7XwKBgQD+6VMsbpkC3jnjaYPy\nRpDzQI0EqWACUk3EAlA3Fvu3pbRCtfcEoWuo0RHrUodfps2okcF0kfoCqFt2Gwmz\nw5MIaiP0HBSixinD2F2U5a8rw3DegYNbRZ9beoD8FilybC+mMmEg9lQrUDodN+PL\nb/JAGJXN7O5vY6plgq04fx23BwKBgQDuQ+6/kc+KEvqbGo5cTAKASJ3FhrjR/wuc\n2N0w9PRR6Q14ivnPtarvRnZHhzfz8BhXlCtSvuij58F8siF/vx6gvrGL+XkoVfwi\nt/Jf2Ch5D9URhpXQMh9jxCm4A+ELaeKZL6P6Fjcas6cM9RAmA8qZ//ZxDW7+hho3\nYjHmz+TG3wKBgQDnv7zMQmh9wQekBsPcuecCIAeU21/b/HOS5f+DdjO3DMFLfR9s\naEz2l8zQwqEshvuma40Tq7s+O02bnI0/j2jXV5gEUJs6OSqzULwTqJWPFgpBYEHJ\n8wwkIMWvaX6Y9l6DnH3Nd+Wh0zhiY/OHeukk+LUJGITVZCkATMOq/3ZGdQKBgAmj\nT9YJ9OY17FM32Mhc/sDnrxIdZ/5+nZ6jmxbu4a8qiTP2EzLWu2pgZEpyas4ASUvJ\nn5MCS/DNYCNGJVrAhWGlNRNfbQo3qDJTVIeR+9khzdGeqxK35FMpzTI3XfQTPWpK\n5gwot+PpnnlEtHmFL73Y/8QE8hdznz3cR/55LFzrAoGBAI2rLM7rIWrsq/d/5lfM\nHswz1PXEA41SQkWHaPAMp2yedxDC+0446A4/iX6tpasW2Pe1MeTeg9GYRprR0DkY\nTf3n1n1TX1ch9VsdKK0khBIkmerKW7fJv6Ifk6C0CWf+E2mry+Xh9ivbkwDgu61t\nPuUakS684E7Z3/c57zDsW3Ti\n-----END PRIVATE KEY-----\n",
+  "client_email": "food-truck@aerial-antonym-413017.iam.gserviceaccount.com",
+  "client_id": "100803380304851700414",
+  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+  "token_uri": "https://oauth2.googleapis.com/token",
+  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/food-truck%40aerial-antonym-413017.iam.gserviceaccount.com",
+  "universe_domain": "googleapis.com"
+}
