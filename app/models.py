@@ -124,3 +124,4 @@ class Item:
                 SELECT * FROM item
             """)
             return cursor.fetchall()
+        

@@ -6,7 +6,15 @@ import jwt
 import datetime
 from flask import Blueprint
 from .. import get_db
-import bcrypt
+import csv
+from sqlalchemy.exc import SQLAlchemyError
+from werkzeug.utils import secure_filename
+import os
+from google.cloud import storage
+from io import StringIO
+
+
+gcs_client = storage.Client()
 
 login_bp = Blueprint('login', __name__, url_prefix='/auth')
 
@@ -179,4 +187,51 @@ def get_all_items():
     """
     items = Item.get_all_items()  # Assuming get_all_items is the method to fetch all items
     return jsonify(items), 200
+
+
+
+@item_bp.route('/csv', methods=['POST'])
+def upload_csv():
+    """
+    Route to upload a CSV file and process it to add items to the database.
+    The CSV should have item details in the following order:
+    itemId, name, pictureUrl, price, description.
+    Duplicates are checked against the `itemId`.
+
+    :return: A string response indicating the result of the upload and processing.
+    """
+    if 'file' not in request.files:
+        return jsonify({'error': 'No file part'}), 400
+    file = request.files['file']
+    if file.filename == '':
+        return jsonify({'error': 'No selected file'}), 400
+    if file and file.filename.endswith('.csv'):
+        try:
+            bucket_name = 'food_truck_csv'  # Replace with your actual bucket name
+            bucket = gcs_client.get_bucket(bucket_name)
+            filename = secure_filename(file.filename)
+            blob = bucket.blob(filename)
+            blob.upload_from_string(file.read(), content_type='text/csv')
+            # At this point, the file is uploaded to Google Cloud Storage
+            # Now, you may proceed to process the file as needed
+            csv_content = blob.download_as_text()
+            csv_reader = csv.reader(StringIO(csv_content))
+            next(csv_reader)  # Skip the header row if present
+        
+        # Process CSV data
+            for row in csv_reader:
+                name, picture_url, price, description,item_id = row
+                # Check if an item with the same itemId already exists to avoid duplicates
+                print()
+                if not Item.get_item(itemId=int(item_id)):
+                    Item.insert_item(name, picture_url, float(price), description)
+
+            return 'File uploaded and processed successfully to GCS', 200
+        except Exception as e:
+            return jsonify({'error': 'Failed to process file', 'message': str(e)}), 500
+    else:
+        return jsonify({'error': 'Invalid file format'}), 400
+
+
+        
 
