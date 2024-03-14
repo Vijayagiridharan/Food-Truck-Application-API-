@@ -225,7 +225,8 @@ def upload_csv():
                 print()
                 if not Item.get_item(itemId=int(item_id)):
                     Item.insert_item(name, picture_url, float(price), description)
-
+                else:  # If an item with the same itemId exists, update it
+                    Item.update_item(int(item_id), name, picture_url, float(price), description)
             return 'File uploaded and processed successfully to GCS', 200
         except Exception as e:
             return jsonify({'error': 'Failed to process file', 'message': str(e)}), 500
