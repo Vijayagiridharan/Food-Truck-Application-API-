@@ -35,7 +35,8 @@ def create_app():
     app.register_blueprint(login_bp)
     from .routes.routes import item_bp as item_bp
     app.register_blueprint(item_bp)
-
+    from .routes.routes import order_bp as order_bp
+    app.register_blueprint(order_bp)
 
 
     return app

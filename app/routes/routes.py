@@ -1,7 +1,7 @@
 import sys
 from flask import jsonify, Blueprint, request
 #from werkzeug.security import check_password_hash,generate_password_hash
-from ..models import  UserDetail, Item
+from ..models import  UserDetail, Item,orderdetail,orderitemdetails
 import jwt
 import datetime
 from flask import Blueprint
@@ -104,6 +104,7 @@ def test_db():
 
 
 item_bp = Blueprint('item', __name__, url_prefix='/item')
+order_bp = Blueprint ('order', __name__, url_prefix='/order')
 
 @item_bp.route('/create', methods=['POST'])
 def create_item():
@@ -117,9 +118,6 @@ def create_item():
     data = request.json
     Item.insert_item(data['name'], data['pictureUrl'], data['price'], data['description'])
     return jsonify({"message": "Item created successfully"}), 201
-
-
-
 
 @item_bp.route('/<int:item_id>', methods=['GET'])
 def read_item(item_id):
@@ -187,6 +185,115 @@ def get_all_items():
     """
     items = Item.get_all_items()  # Assuming get_all_items is the method to fetch all items
     return jsonify(items), 200
+
+@order_bp.route('/create', methods=['POST'])
+def create_order():
+    """
+    API endpoint to create a new item.
+    Expects a JSON payload with name, pictureUrl, price, and description.
+
+    Returns:
+        A JSON response with a success message and a 201 HTTP status code if the item is created successfully.
+    """
+    data = request.json
+    orderdetail.insert_order(data['username'], data['orderstatus'], data['paymentstatus'], data['totalprice'])
+    
+    orderid = orderdetail.get_last_inserted_order_id()
+    
+    # Insert items into the orderitemdetails table
+    for item in data['items']:
+        orderitemdetails.insert_orderitem(orderid, item['itemid'], item['itemquantity'], item['itemprice'], item['itemdescription'])
+    
+    
+    """orderitemdetails.insert_orderitem(data['orderid'], data['itemid'], data['itemquantity'], data['itemprice'], data['itemdescription'])"""
+    return jsonify({"message": "Order created successfully"}), 201
+
+@order_bp.route('/getordersuccess', methods=['GET'])
+def get_accepted_orders_with_items():
+    """
+    API endpoint to fetch all order details with order status "Accepted" and payment status "Success"
+    along with their corresponding item details.
+
+    Returns:
+        A JSON response with a list of order details and their corresponding item details and a 200 HTTP status code.
+    """
+    db = get_db()
+    accepted_orders_with_items = {}
+    with db.cursor() as cursor:
+        cursor.execute("""
+            SELECT od.username, od.orderid, od.orderstatus, od.paymentstatus, od.totalprice,
+                   oid.itemid, oid.itemquantity, oid.itemprice, oid.itemdescription
+            FROM orderdetail od
+            JOIN orderitemdetails oid ON od.orderid = oid.orderid
+            WHERE od.orderstatus = 'I' AND od.paymentstatus = 'S'
+        """)
+        orders = cursor.fetchall()
+        for order in orders:
+            username = order['username']
+            order_id = order['orderid']
+            if username not in accepted_orders_with_items:
+                accepted_orders_with_items[username] = {
+                    'username': username,
+                    'orderid': order_id,
+                    'orderstatus': order['orderstatus'],
+                    'paymentstatus': order['paymentstatus'],
+                    'totalprice': order['totalprice'],
+                    'items': []
+                }
+            accepted_orders_with_items[username]['items'].append({
+                'itemid': order['itemid'],
+                'itemquantity': order['itemquantity'],
+                'itemprice': order['itemprice'],
+                'itemdescription': order['itemdescription']
+            })
+
+    # Convert dictionary values to list
+    accepted_orders_with_items_list = list(accepted_orders_with_items.values())
+
+    return jsonify(accepted_orders_with_items_list), 200
+
+@order_bp.route('/update/<int:orderid>', methods=['PUT'])
+def update_order(orderid):
+    """
+    API endpoint to update an existing order.
+
+    Args:
+        orderid (int): Unique identifier of the order to update.
+    
+    Expects a JSON payload with updated order status.
+
+    Returns:
+        A JSON response with a success message and a 200 HTTP status code if the update is successful,
+        otherwise, returns an error message with a 400 HTTP status code.
+    """
+    data = request.json
+
+    # Check if the orderid exists
+    existing_order = orderdetail.find_order_by_id(orderid)
+    if not existing_order:
+        return jsonify({"error": f"Order with id {orderid} does not exist"}), 404
+
+    # Update the order in the database
+    orderdetail.update_order(orderid,data['orderstatus'])
+    return jsonify({"message": "Order updated successfully"}), 200
+
+@order_bp.route('/<int:orderid>', methods=['GET'])
+def read_order(orderid):
+    """
+    API endpoint to retrieve an item by its ID.
+
+    Args:
+        item_id (int): Unique identifier of the item.
+
+    Returns:
+        A JSON response with the item data and a 200 HTTP status code if the item is found.
+        If the item is not found, returns a JSON error message with a 404 HTTP status code.
+    """
+    orderstatus = orderdetail.getorderstatus(orderid)
+    if orderstatus:
+        return jsonify(orderstatus), 200
+    else:
+        return jsonify({"error": "order id not found"}), 404
 
 
 
