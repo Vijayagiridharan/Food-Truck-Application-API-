@@ -1,5 +1,5 @@
 import sys
-from flask import jsonify, Blueprint, request
+from flask import jsonify, Blueprint, request, current_app
 #from werkzeug.security import check_password_hash,generate_password_hash
 from ..models import  UserDetail, Item,orderdetail,orderitemdetails
 import jwt
@@ -12,6 +12,7 @@ from werkzeug.utils import secure_filename
 import os
 from google.cloud import storage
 from io import StringIO
+from flask import current_app as app
 
 
 gcs_client = storage.Client()
@@ -22,8 +23,6 @@ login_bp = Blueprint('login', __name__, url_prefix='/auth')
 def index():
     return "Hello from Module One!"
 
-
-
 @login_bp.route('/login', methods=['POST'])
 def login():
     # Retrieve data sent in the request's body as JSON
@@ -32,19 +31,31 @@ def login():
     # Query the UserDetail model to find a user with the provided email
     user = UserDetail.find_by_email(emailid=data['emailid'])
 
+    # Logging to debug user retrieval
+    app.logger.debug("Retrieved user data: %s", user)
+
     # Check if the user exists in the database
     if not user:
         # If the user does not exist, return an error message
         return jsonify({"error": "Invalid email id"}), 401
 
-    if (data['password']==user['passsword']): 
-        if(data['isAdmin']==user['isAdmin']):
-            return jsonify({"success": "Login successful"}),201
+    # Convert isAdmin to an integer
+    isAdmin = int(user['isAdmin'])
+
+    # Check if the password matches
+    if UserDetail.validate_password(user, data['emailid'], data['password']): 
+        # Check if the isAdmin flag matches
+        if data.get('isAdmin') == isAdmin:
+            app.logger.debug("User authenticated successfully.")
+            return jsonify({"success": "Login successful"}), 200
         else:
-            return jsonify({"error": "User doesnt have admin credentials and cant enter admin module"}),201    
+            app.logger.debug("User doesn't have admin credentials and can't enter admin module.")
+            return jsonify({"error": "User doesn't have admin credentials and can't enter admin module"}), 401
     else:
-        # If the password does not match, return an error message
+        app.logger.debug("Passwords do not match.")
         return jsonify({"error": "Please enter correct email id/password combination"}), 401
+
+
 
     # Generate a JWT token for the authenticated user
     token = generate_jwt_token(user.userid)
@@ -64,6 +75,7 @@ def signup():
     if existing_user:
         return jsonify({"error": "Email already exists"}), 409
     
+    isAdmin_value = data.get('isAdmin')
     
     # Create a new user
     UserDetail.insert_user(data['name'],data['mobileno'],data['emailid'],data['password'],data['isAdmin'])

@@ -1,4 +1,6 @@
 from . import get_db
+import bcrypt
+import hashlib
 
 class UserDetail:
     @staticmethod
@@ -13,12 +15,28 @@ class UserDetail:
     @staticmethod
     def insert_user(name, mobileno, emailid, password,isAdmin):
         db = get_db()
+        hashed_password = hashlib.sha256(password.encode()).hexdigest()
+        
         with db.cursor() as cursor:
             cursor.execute("""
                 INSERT INTO userdetail (name, mobileno, emailid, passsword,isAdmin)
                 VALUES (%s, %s, %s, %s, %s)
-            """, (name, mobileno, emailid, password, isAdmin))
+            """, (name, mobileno, emailid, hashed_password, isAdmin))
             db.commit()
+
+    @staticmethod
+    def validate_password(user, emailid, input_password):
+       hashed_input_password = hashlib.sha256(input_password.encode()).hexdigest()
+      
+       
+       if user and hashed_input_password == user['passsword']:
+            print("Passwords match!")  # Debugging print
+            return True  # Password matches
+       else:
+            print("Passwords do not match!")  # Debugging print
+            return False  # Password does not match
+
+
 
 class orderdetail:
     """
