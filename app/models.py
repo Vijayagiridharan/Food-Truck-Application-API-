@@ -12,7 +12,7 @@ class UserDetail:
             """, (emailid,))
             return cursor.fetchone()
 
-    @staticmethod
+    @staticmethod   
     def insert_user(name, mobileno, emailid, password,isAdmin):
         db = get_db()
         hashed_password = hashlib.sha256(password.encode()).hexdigest()
